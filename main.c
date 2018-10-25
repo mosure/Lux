@@ -102,9 +102,9 @@ const uint_t win_s = 512;
 const uint_t hop_s = 256;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 400;
-const uint_t n_energy_mag_acc = 40;
+const uint_t n_energy_mag_acc = 80;
 const uint_t n_local_dim = 200;
-const uint_t max_buffer_runs = 200;
+const uint_t max_buffer_runs = 400;
 uint_t samplerate;
 
 static void read_callback(struct SoundIoInStream *instream, int frame_count_min, int frame_count_max)
@@ -680,7 +680,7 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
 
     if (pitch_acc_mean > 1)
     {
-        or_led_origin(channel, 0, (struct HSV){ .H = map((int)(12 * log2f(pitch_acc_mean)) % 50, 0, 50, 0, 1), .S = 1, .V = lightness });
+        set_led_origin(channel, 0, (struct HSV){ .H = map((int)(12 * log2f(pitch_acc_mean)) % 20, 0, 20, 0, 1), .S = 1, .V = lightness });
     }
 }
 
@@ -720,7 +720,7 @@ int main(int argc, char *argv[])
         float energy_mag_acc_mean = fvec_mean(energy_mag_acc);
         float energy_local_dim_mean = fvec_mean(local_dim_buf);
 
-        double lightness = map(energy_mag_acc_mean - 0.5f * energy_local_dim_mean, 0.0005, 4, 0, 1);
+        double lightness = map(energy_mag_acc_mean - 0.75f * energy_local_dim_mean, 0.0005, 3, 0, 1);
 
         float pitch_acc_mean = fvec_mean(pitch_acc);
 
