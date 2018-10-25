@@ -52,7 +52,7 @@ uint64_t previous_time;
 
 int pre_offsets[CHANNELS] = { 17, 18 };
 int post_offsets[CHANNELS] = { 16, 15 };
-int midpoint_offsets[CHANNELS] = { 0, 2 };
+int midpoint_offsets[CHANNELS] = { 1, 0 };
 
 int led_counts[CHANNELS];
 int led_origins[CHANNELS];
@@ -92,17 +92,19 @@ aubio_pvoc_t *pv;
 aubio_fft_t *fft;
 fvec_t *pitch_buf;
 fvec_t *energy_mag_acc;
+fvec_t *local_dim_buf;
 fvec_t *buffer;
 fvec_t *out_filters;
-fvec_t *local_energies;
 fvec_t *pitch_acc;
 cvec_t *fftgrain;
 fmat_t *fb_coeffs;
-const uint_t win_s = 1024;
+const uint_t win_s = 512;
 const uint_t hop_s = 256;
 const uint_t n_filters = 40;
-const uint_t n_pitch_acc = 10;
-const uint_t n_energy_mag_acc = 10;
+const uint_t n_pitch_acc = 400;
+const uint_t n_energy_mag_acc = 40;
+const uint_t n_local_dim = 200;
+const uint_t max_buffer_runs = 200;
 uint_t samplerate;
 
 static void read_callback(struct SoundIoInStream *instream, int frame_count_min, int frame_count_max)
@@ -110,8 +112,18 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
     struct SoundIoChannelArea *areas;
     int err;
 
-    int wasted_frames = frame_count_max - buffer->length;
+    int wasted_frames = frame_count_max % buffer->length;
 
+    int itt = frame_count_max / buffer->length;
+
+    if (itt > max_buffer_runs)
+    {
+        wasted_frames = wasted_frames + (itt - max_buffer_runs) * buffer->length;
+        itt = max_buffer_runs;
+    }
+
+    // Instead of wasting these frames
+    // Try to run them through aubio and stage them for output
     if (wasted_frames > 0)
     {
         if ((err = soundio_instream_begin_read(instream, &areas, &wasted_frames))) {
@@ -125,44 +137,62 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
         }
     }
 
-    if ((err = soundio_instream_begin_read(instream, &areas, &buffer->length))) {
-        fprintf(stderr, "begin read error: %s", soundio_strerror(err));
-        exit(1);
-    }
-
-    if (!areas) {
-        // Due to an overflow there is a hole. Fill the ring buffer with
-        // silence for the size of the hole.
-        // memset(write_ptr, 0, frame_count * instream->bytes_per_frame);
-    } else {
-        for (int frame = 0; frame < buffer->length; frame++) {
-            memcpy(&(buffer->data[frame]), areas[0].ptr, instream->bytes_per_sample);
-            areas[0].ptr += areas[0].step;
+    for (int i = 0; i < itt; i++){
+        if ((err = soundio_instream_begin_read(instream, &areas, &buffer->length))) {
+            fprintf(stderr, "begin read error: %s", soundio_strerror(err));
+            exit(1);
         }
+
+        if (!areas) {
+            // Due to an overflow there is a hole. Fill the ring buffer with
+            // silence for the size of the hole.
+            // memset(write_ptr, 0, frame_count * instream->bytes_per_frame);
+        } else {
+            for (int frame = 0; frame < buffer->length; frame++) {
+                memcpy(&(buffer->data[frame]), areas[0].ptr, instream->bytes_per_sample);
+                areas[0].ptr += areas[0].step;
+            }
+        }
+
+        if ((err = soundio_instream_end_read(instream))) {
+            fprintf(stderr, "end read error: %s", soundio_strerror(err));
+            exit(1);
+        }
+
+        aubio_pitch_do(o, buffer, pitch_buf);
+        fvec_push(pitch_acc, pitch_buf->data[0]);
+
+        aubio_pvoc_do(pv, buffer, fftgrain);
+
+        // Clear the buffer so that future memcpy does not ruin it
+        fvec_zeros(buffer);
+
+        uint_t n = 1;
+        while (n) {
+            aubio_filterbank_do(fb, fftgrain, out_filters);
+            n--;
+        }
+
+        float energy_mag;
+        float energy_res;
+
+        out_filters->data[0] = out_filters->data[0] * 5;
+
+        for (int i = 0; i < out_filters->length; i++)
+        {
+            energy_mag = energy_mag + out_filters->data[i] * out_filters->data[i];
+        }
+
+        energy_mag = sqrtf(energy_mag);
+        energy_res = (energy_mag - 1);
+
+        fvec_push(energy_mag_acc, energy_res);
+        fvec_push(local_dim_buf, energy_res);
     }
 
-    if ((err = soundio_instream_end_read(instream))) {
-        fprintf(stderr, "end read error: %s", soundio_strerror(err));
-        exit(1);
-    }
+    // fb_coeffs = aubio_filterbank_get_coeffs(fb);
 
-    aubio_pitch_do(o, buffer, pitch_buf);
-    fvec_push(pitch_acc, pitch_buf->data[0]);
-
-    aubio_pvoc_do(pv, buffer, fftgrain);
-
-    // Clear the buffer so that future memcpy does not ruin it
-    fvec_zeros(buffer);
-
-    uint_t n = 10;
-    while (n) {
-        aubio_filterbank_do(fb, fftgrain, out_filters);
-        n--;
-    }
-
-    //fb_coeffs = aubio_filterbank_get_coeffs(fb);
-
-    //fmat_print(fb_coeffs);
+    // fmat_print(fb_coeffs);
     // fvec_print(out_filters);
 }
 
@@ -478,8 +508,8 @@ int init_audio(int argc, char *argv[])
     buffer = new_fvec(hop_s);
     pitch_buf = new_fvec(1);
     energy_mag_acc = new_fvec(n_energy_mag_acc);
+    local_dim_buf = new_fvec(n_local_dim);
     out_filters = new_fvec(n_filters);
-    local_energies = new_fvec(n_filters);
     pitch_acc = new_fvec(n_pitch_acc);
     fvec_zeros(pitch_acc);
     fftgrain = new_cvec(win_s);
@@ -554,8 +584,8 @@ void dispose()
     del_cvec(fftgrain);
     del_fvec(pitch_buf);
     del_fvec(buffer);
+    del_fvec(local_dim_buf);
     del_fvec(out_filters);
-    del_fvec(local_energies);
     aubio_cleanup();
 
     printf("Disposed aubio.\n");
@@ -650,7 +680,7 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
 
     if (pitch_acc_mean > 1)
     {
-        set_led_origin(channel, 0, (struct HSV){ .H = map((int)(12 * log2f(pitch_acc_mean)) % 50, 0, 50, 0, 1), .S = 1, .V = lightness });
+        or_led_origin(channel, 0, (struct HSV){ .H = map((int)(12 * log2f(pitch_acc_mean)) % 50, 0, 50, 0, 1), .S = 1, .V = lightness });
     }
 }
 
@@ -669,7 +699,7 @@ int main(int argc, char *argv[])
     printf("Running animation loop.\n");
     double elapsed_time;
     double frame[CHANNELS];
-    double animation_speed = 85.0;
+    double animation_speed = 75.0;
     double channel_speeds[CHANNELS];
     int frame_hops[CHANNELS];
 
@@ -686,69 +716,11 @@ int main(int argc, char *argv[])
     {
         elapsed_time = get_elapsed();
 
-        // Come up with a way to have these values calculated outside of this scope (in the running animation scope)
-        //int disp = rand_range(0, 1000) < 10;
-        //float lightness = rand_range(0, 75) / 100.0f;
+        // Consider making this a weighted mean by time
+        float energy_mag_acc_mean = fvec_mean(energy_mag_acc);
+        float energy_local_dim_mean = fvec_mean(local_dim_buf);
 
-        fvec_copy(out_filters, local_energies);
-
-        // Get magnitude for norm
-        float energy_mag;
-        float energy_res;
-
-        for (int i = 0; i < local_energies->length; i++)
-        {
-            energy_mag = energy_mag + local_energies->data[i] * local_energies->data[i];
-        }
-
-        energy_mag = sqrtf(energy_mag);
-
-        if (energy_mag > 0.1)
-        {
-            // Result is now normal
-            for (int i = 0; i < local_energies->length; i++)
-            {
-                local_energies->data[i] = local_energies->data[i] / energy_mag;
-            }
-
-            // local_energies->data[0] = local_energies->data[0] * 5;
-
-            // Do modifications to filter out low-energy noise
-            for (int i = 0; i < local_energies->length; i++)
-            {
-                local_energies->data[i] = local_energies->data[i] * (1 - (1 / exp(local_energies->data[i] * 10))); // Adjust this equation based on energy_max so that energy_max is hardly affected
-            }
-
-            float energy_max = fvec_max(local_energies);
-
-            // Low-energy pass filter
-            for (int i = 0; i < local_energies->length; i++)
-            {
-                if (local_energies->data[i] < energy_max / 1.5f)
-                {
-                    local_energies->data[i] = 0;
-                }
-            }
-
-            // Recalculate modified magnitude
-            for (int i = 0; i < local_energies->length; i++)
-            {
-                energy_mag = energy_mag + local_energies->data[i] * local_energies->data[i];
-            }
-
-            energy_mag = sqrtf(energy_mag);
-
-            float energy_sum = fvec_sum(local_energies);
-
-            float energy_mean = fvec_mean(local_energies);
-
-            energy_res = (energy_mag - 1);
-
-            fvec_push(energy_mag_acc, energy_res);
-            // printf("max: %.3f, mean: %.3f, sum: %.3f, mag: %.5f, res: %.3f\n", energy_max, energy_mean, energy_sum, energy_mag, energy_res);
-        }
-
-        double lightness = map(fvec_mean(energy_mag_acc), 0.0001, 0.5, 0, 1);
+        double lightness = map(energy_mag_acc_mean - 0.5f * energy_local_dim_mean, 0.0005, 4, 0, 1);
 
         float pitch_acc_mean = fvec_mean(pitch_acc);
 
