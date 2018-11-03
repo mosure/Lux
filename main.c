@@ -160,7 +160,10 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
         }
 
         aubio_pitch_do(o, buffer, pitch_buf);
-        fvec_push(pitch_acc, pitch_buf->data[0]);
+
+        if (pitch_buf->data[0] != 0) {
+            fvec_push(pitch_acc, pitch_buf->data[0]);
+        }
 
         aubio_pvoc_do(pv, buffer, fftgrain);
 
@@ -747,7 +750,7 @@ int main(int argc, char *argv[])
 
             // Run anti-aliasing and origin dimming
             //anti_alias_matrix_origin(channel, frame[channel]);
-            // decay_brightness_origin(channel, 0.98);
+            decay_brightness_origin(channel, 0.98);
         }
 
         //matrix_render();
