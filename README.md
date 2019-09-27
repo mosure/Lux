@@ -5,7 +5,7 @@ A Raspberry Pi WS2812B animation library and controller.
 TODO: Add video demo? Otherwise, add a simulator option?
 
 ## Install
-Install dependencies `lsoundio`, `laubio`, `rpi_ws281x`, `lws2811`, `Ofast` on Raspberry Pi.
+Install dependencies `lsoundio`, `laubio`, `rpi_ws281x` on Raspberry Pi.
 
 `git clone git@github.com:Mosure/Lux.git` to get files.
 
