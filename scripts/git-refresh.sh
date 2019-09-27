@@ -3,7 +3,7 @@
 readonly TASK_NAME="Lux"
 
 # Kill the current task
-pkill -f "$TASK_NAME"
+if pgrep "$TASK_NAME"; then pkill -f "$TASK_NAME"; fi
 
 # Reset to origin master
 git fetch --all
