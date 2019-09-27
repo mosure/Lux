@@ -14,9 +14,10 @@ app.get('/', (request, response) => {
 // Push webhook
 app.post('/push', (request, response) => {
     exec('../scripts/git-refresh.sh', (error: ExecException, stdout: string, stderr: string) => {
-        console.log(process.cwd());
         console.log(stdout);
         console.log(stderr);
+
+        // TODO: Add stdout/stderr to status? Or return here if the script exists immediately? Maybe start in background so this doesn't hang
     });
 
     response.status(200).send();
