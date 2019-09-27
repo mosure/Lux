@@ -25,3 +25,6 @@ TODO: Add more regarding config command arrays and timing configuration objects.
 
 ## Adding custom rendering commands
 TODO: Add information for extending the animation library to add new commands/effects
+
+## Contribute to the Library
+TODO: Add information for becoming a collaborator and repository rules/formats.
