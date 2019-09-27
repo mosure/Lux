@@ -11,6 +11,6 @@ git fetch --all
 git reset --hard origin/master
 
 # Build the new C Application from Source
-./build.sh
+../src/build.sh
 
 bash -c "exec -a $TASK_NAME ./start.sh"
