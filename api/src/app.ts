@@ -1,9 +1,12 @@
+import { exec, ExecException } from 'child_process';
+
 import express from 'express';
 import SmeeClient = require('smee-client');
 
 const app = express();
 const port = 3000;
 
+// TODO: Have this return the stdout/stderr log (clip to XXX lines) from exec
 app.get('/', (request, response) => {
     response.send('Online!');
 });
@@ -11,6 +14,12 @@ app.get('/', (request, response) => {
 // Push webhook
 app.post('/push', (request, response) => {
     // TODO: Implement config.json write from body and git-refresh.sh
+    exec('pwd', (error: ExecException, stdout: string, stderr: string) => {
+        console.log(stdout);
+        console.log(stderr);
+    });
+
+    response.status(200).send();
 });
 
 app.listen(port, (err) => {
