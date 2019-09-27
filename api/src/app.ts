@@ -13,7 +13,7 @@ app.get('/', (request, response) => {
 
 // Push webhook
 app.post('/push', (request, response) => {
-    exec('../src/git-refresh.sh', (error: ExecException, stdout: string, stderr: string) => {
+    exec('pwd && ../src/git-refresh.sh', (error: ExecException, stdout: string, stderr: string) => {
         console.log(stdout);
         console.log(stderr);
     });
