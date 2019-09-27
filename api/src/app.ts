@@ -1,6 +1,5 @@
-import { SmeeClient } from 'smee-client';
-
 import express from 'express';
+import SmeeClient = require('smee-client');
 
 const app = express();
 const port = 3000;
@@ -20,6 +19,8 @@ app.listen(port, (err) => {
     }
     return console.log(`server is listening on ${port}`);
 });
+
+console.log(SmeeClient);
 
 // Start a smee.io forwarder for GitHub webhooks
 const smee = new SmeeClient({
