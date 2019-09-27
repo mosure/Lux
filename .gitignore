@@ -2,3 +2,5 @@ aubio\
 libsoundio\
 pyaudio\
 rpi_ws281x\
+
+*.o
