@@ -17,10 +17,12 @@ app.post('/push', (request, response) => {
         console.log(stdout);
         console.log(stderr);
 
-        // TODO: Add stdout/stderr to status? Or return here if the script exists immediately? Maybe start in background so this doesn't hang
+        if (stderr) {
+            response.status(500).send(stderr);
+        } else {
+            response.status(200).send(stdout);
+        }
     });
-
-    response.status(200).send();
 });
 
 app.listen(port, (err) => {
