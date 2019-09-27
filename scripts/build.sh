@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cd ../src
+readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+cd ${DIR}/../src
 
 gcc -c ./frozen-master/frozen.c -I ./frozen-master -o frozen.o
 ar rcs libfrozen.a frozen.o
