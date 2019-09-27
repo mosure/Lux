@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ../src
+
 gcc -c ./frozen-master/frozen.c -I ./frozen-master -o frozen.o
 ar rcs libfrozen.a frozen.o
 

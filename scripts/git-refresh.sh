@@ -1,5 +1,6 @@
 #!/bin/bash
 
+readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 readonly TASK_NAME="Lux"
 
 # Kill the current task
@@ -11,6 +12,6 @@ git fetch --all
 git reset --hard origin/master
 
 # Build the new C Application from Source
-../src/build.sh
+"${DIR}/build.sh"
 
-bash -c "exec -a $TASK_NAME ./start.sh"
+bash -c "exec -a $TASK_NAME ${DIR}/start.sh"
