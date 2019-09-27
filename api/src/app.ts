@@ -13,8 +13,12 @@ app.get('/', (request, response) => {
 
 // Push webhook
 app.post('/push', (request, response) => {
-    // TODO: Implement config.json write from body and git-refresh.sh
     exec('pwd', (error: ExecException, stdout: string, stderr: string) => {
+        console.log(stdout);
+        console.log(stderr);
+    });
+
+    exec('./git-refresh.sh', (error: ExecException, stdout: string, stderr: string) => {
         console.log(stdout);
         console.log(stderr);
     });
