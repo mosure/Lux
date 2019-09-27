@@ -42,7 +42,4 @@ const smee = new SmeeClient({
     target: 'http://localhost:' + port + '/push',
 });
 
-const events = smee.start();
-
-// Stop forwarding events
-// events.close();
+smee.start();
