@@ -13,7 +13,7 @@ app.get('/', (request, response) => {
 
 // Push webhook
 app.post('/push', (request, response) => {
-    console.log('Push received');
+    console.log('Push received...');
 
     exec('pwd', (error: ExecException, stdout: string, stderr: string) => {
         console.log(stdout);
