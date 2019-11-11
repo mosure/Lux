@@ -1,7 +1,5 @@
 import { exec, ExecException } from 'child_process';
-
 import express from 'express';
-import SmeeClient = require('smee-client');
 
 const app = express();
 const port = 3000;
@@ -11,7 +9,7 @@ app.get('/', (request, response) => {
     response.send('Online!');
 });
 
-// Push webhook
+// Update codebase
 app.post('/push', (request, response) => {
     exec('../scripts/git-refresh.sh', (error: ExecException, stdout: string, stderr: string) => {
         console.log(stdout);
@@ -31,12 +29,3 @@ app.listen(port, (err) => {
     }
     return console.log(`server is listening on ${port}`);
 });
-
-// Start a smee.io forwarder for GitHub webhooks
-const smee = new SmeeClient({
-    logger: console,
-    source: 'https://smee.io/RFydymJ4LceIVeNu',
-    target: 'http://localhost:' + port + '/push',
-});
-
-smee.start();
