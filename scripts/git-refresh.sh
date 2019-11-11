@@ -14,4 +14,4 @@ git reset --hard origin/master
 # Build the new C Application from Source
 "${DIR}/build.sh"
 
-bash -c "exec -a $TASK_NAME ${DIR}/start.sh"
+bash -c "exec -a $TASK_NAME ${DIR}/start.sh &"
