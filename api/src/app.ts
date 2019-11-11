@@ -2,7 +2,7 @@ import { exec, ExecException } from 'child_process';
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = 80;
 
 // TODO: Have this return the stdout/stderr log (clip to XXX lines) from exec
 app.get('/', (request, response) => {
