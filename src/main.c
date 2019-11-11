@@ -49,9 +49,9 @@ static uint8_t running = 1;
 
 uint64_t previous_time;
 
-int pre_offsets[CHANNELS] = { 17 };
-int post_offsets[CHANNELS] = { 16 };
-int midpoint_offsets[CHANNELS] = { 1 };
+int pre_offsets[CHANNELS] = { 0 };
+int post_offsets[CHANNELS] = { 37 };
+int midpoint_offsets[CHANNELS] = { 0 };
 
 int led_counts[CHANNELS];
 int led_origins[CHANNELS];
