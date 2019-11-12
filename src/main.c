@@ -94,7 +94,7 @@ const uint_t win_s = 512;
 const uint_t hop_s = 256;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 400;
-const uint_t n_energy_mag_acc = 80;
+const uint_t n_energy_mag_acc = 200;
 const uint_t n_local_dim = 200;
 const uint_t max_buffer_runs = 400;
 uint_t samplerate;
@@ -182,7 +182,7 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
         energy_res = (energy_mag - 1);
 
         fvec_push(energy_mag_acc, energy_res);
-        fvec_push(local_dim_buf, energy_res);
+        //fvec_push(local_dim_buf, energy_res);
     }
 
     // fb_coeffs = aubio_filterbank_get_coeffs(fb);
@@ -713,7 +713,7 @@ int main(int argc, char *argv[])
 
         // Consider making this a weighted mean by time
         float energy_mag_acc_mean = fvec_mean(energy_mag_acc);
-        float energy_local_dim_mean = fvec_mean(local_dim_buf);
+        //float energy_local_dim_mean = fvec_mean(local_dim_buf);
 
         double lightness = map(energy_mag_acc_mean, 0.0005, 0.2, 0, 1);
 
