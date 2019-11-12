@@ -681,14 +681,14 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
 
 void fractional_bar(int channel, double pos, double width, double hue, bool wrap)
 {
-    int upper_pixel = (int)ceil(pos) % led_counts[channel];
+    int upper_pixel = (int)(ceil(pos) + led_counts[channel]) % led_counts[channel];
 
     if (wrap || upper_pixel == (int)ceil(pos))
     {
         set_led(channel, upper_pixel, (struct HSV){ .H = hue, .S = 1, .V = pos - (int)pos });
     }
 
-    int lower_pixel = (int)(floor(pos) - ceil(width)) % led_counts[channel];
+    int lower_pixel = (int)(floor(pos) - ceil(width) + led_counts[channel]) % led_counts[channel];
 
     if (wrap || lower_pixel == (int)(floor(pos) - width))
     {
@@ -696,7 +696,7 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
     }
 
     for (int i = 0; i < floor(width); i++) {
-        int index = ((int)floor(pos) - i) % led_counts[channel];
+        int index = ((int)floor(pos) - i + led_counts[channel]) % led_counts[channel];
 
         if (wrap || index == (int)floor(pos) - i)
         {
@@ -707,7 +707,7 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 
 void ring(int channel, double frame, double hue)
 {
-    double pos = ((int)frame) % led_counts[channel] + (frame - (int)frame);
+    double pos = ((int)frame + led_counts[channel]) % led_counts[channel] + (frame - (int)frame);
     fractional_bar(channel, pos, 4, hue, true);
 }
 
@@ -778,11 +778,11 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
-            //ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
+            ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
 
             // Render a specific effect
 
-            calibration(channel);
+            //calibration(channel);
             //random_sparkles(channel, frame[channel], frame_hops[channel], disp, lightness);
             //music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
 
