@@ -94,8 +94,8 @@ const uint_t win_s = 512;
 const uint_t hop_s = 256;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 400;
-const uint_t n_energy_mag_acc = 200;
-const uint_t n_local_dim = 200;
+const uint_t n_energy_mag_acc = 100;
+const uint_t n_local_dim = 500;
 const uint_t max_buffer_runs = 400;
 uint_t samplerate;
 
@@ -713,9 +713,9 @@ int main(int argc, char *argv[])
 
         // Consider making this a weighted mean by time
         float energy_mag_acc_mean = fvec_mean(energy_mag_acc);
-        //float energy_local_dim_mean = fvec_mean(local_dim_buf);
+        float energy_local_dim_mean = fvec_mean(local_dim_buf);
 
-        double lightness = map(energy_mag_acc_mean, 0.0005, 1, 0, 1);
+        double lightness = map(energy_mag_acc_mean / (0.8 * energy_local_dim_mean + 0.001), 0.0005, 1, 0, 1);
 
         float pitch_acc_mean = fvec_mean(pitch_acc);
 
