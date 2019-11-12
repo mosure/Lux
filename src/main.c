@@ -711,11 +711,6 @@ void ring(int channel, double frame, double hue)
     fractional_bar(channel, pos, 4, hue, true);
 }
 
-def ring_pair(state, frame):
-    clear(state)
-    ring(state, frame, 0.083)
-    ring(state, -frame, 0.417)
-
 void ring_pair(int channel, double frame, double hue)
 {
     ring(channel, frame, hue);
