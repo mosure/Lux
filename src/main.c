@@ -746,7 +746,7 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
-            bouncer(channel, frame[channel], frame_hops[channel], channel);
+            bouncer(channel, frame[channel], frame_hops[channel]);
 
             // Render a specific effect
 
