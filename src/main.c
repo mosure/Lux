@@ -683,7 +683,7 @@ void bouncer(int channel, double frame, int frame_hops)
 {
     if (frame_hops > 0)
     {
-        anti_alias_matrix_origin(channel, frame);
+        shift_origin(channel, frame_hops);
     }
 
     if (frame > 0 && ((int)(frame / 100)) % 100 == 0) {
