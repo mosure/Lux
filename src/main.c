@@ -686,8 +686,8 @@ void bouncer(int channel, double frame, int frame_hops)
         anti_alias_matrix_origin(channel, frame);
     }
 
-    if (frame > 0 && (frame / 100) % 100 == 0) {
-        set_led_origin(channel, 0, (struct HSV){ .H = 1, .S = 1, .V = lightness });
+    if (frame > 0 && ((int)(frame / 100)) % 100 == 0) {
+        set_led_origin(channel, 0, (struct HSV){ .H = 1, .S = 1, .V = 1 });
     }
 }
 
@@ -746,7 +746,7 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
-            bouncer(channel, frame[channel], frame[hops], channel)
+            bouncer(channel, frame[channel], frame_hops[channel], channel);
 
             // Render a specific effect
 
