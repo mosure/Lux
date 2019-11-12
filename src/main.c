@@ -711,6 +711,17 @@ void ring(int channel, double frame, double hue)
     fractional_bar(channel, pos, 4, hue, true);
 }
 
+def ring_pair(state, frame):
+    clear(state)
+    ring(state, frame, 0.083)
+    ring(state, -frame, 0.417)
+
+void ring_pair(int channel, double frame, double hue)
+{
+    ring(channel, frame, hue);
+    ring(channel, -frame, 1 - hue);
+}
+
 void bouncer(int channel, double frame, int frame_hops)
 {
     if (frame_hops > 0)
@@ -779,7 +790,7 @@ int main(int argc, char *argv[])
             }
 
             state_clear(channel);
-            ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
+            ring_pair(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
 
             // Render a specific effect
 
