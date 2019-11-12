@@ -7,6 +7,8 @@ git fetch --all
 
 git reset --hard origin/master
 
+git pull
+
 # Build the new C Application from Source
 "${DIR}/build.sh"
 
