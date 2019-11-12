@@ -686,7 +686,7 @@ void bouncer(int channel, double frame, int frame_hops)
         shift_origin(channel, frame_hops);
     }
 
-    if (frame > 0 && ((int)(frame / 100)) % 100 == 0) {
+    if (frame > 0 && ((int)(frame / 50)) % 50 == 0) {
         set_led_origin(channel, 0, (struct HSV){ .H = 1, .S = 1, .V = 1 });
     }
 }
@@ -706,7 +706,7 @@ int main(int argc, char *argv[])
     printf("Running animation loop.\n");
     double elapsed_time;
     double frame[CHANNELS];
-    double animation_speed = 75.0;
+    double animation_speed = 25.0;
     double channel_speeds[CHANNELS];
     int frame_hops[CHANNELS];
 
