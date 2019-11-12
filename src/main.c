@@ -778,6 +778,7 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
+            state_clear(channel);
             ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
 
             // Render a specific effect
