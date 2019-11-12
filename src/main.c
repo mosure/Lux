@@ -736,13 +736,13 @@ int main(int argc, char *argv[])
 
             // Render a specific effect
 
-            calibration(channel);
+            //calibration(channel);
             //random_sparkles(channel, frame[channel], frame_hops[channel], disp, lightness);
-            //music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
+            music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
 
             // Run anti-aliasing and origin dimming
             //anti_alias_matrix_origin(channel, frame[channel]);
-            //decay_brightness_origin(channel, 0.98);
+            decay_brightness_origin(channel, 0.98);
         }
 
         //matrix_render();
