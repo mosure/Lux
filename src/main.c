@@ -686,8 +686,8 @@ void bouncer(int channel, double frame, int frame_hops)
         shift_origin(channel, frame_hops);
     }
 
-    if (frame > 0 && ((int)(frame / 50)) % 50 == 0) {
-        set_led_origin(channel, 0, (struct HSV){ .H = 1, .S = 1, .V = 1 });
+    if (frame > 0 && ((int)(frame / 15)) % 50 == 0) {
+        set_led_origin(channel, 0, (struct HSV){ .H = map((int)(frame / 15) % 100, 0, 100, 0, 1), .S = 1, .V = 1 });
     }
 }
 
