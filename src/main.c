@@ -708,7 +708,7 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 void ring(int channel, double frame, double hue)
 {
     double pos = ((int)frame + led_counts[channel]) % led_counts[channel] + (frame - (int)frame);
-    fractional_bar(channel, pos, 4, hue, true);
+    fractional_bar(channel, pos, 8, hue, true);
 }
 
 void ring_pair(int channel, double frame, double hue)
@@ -744,7 +744,7 @@ int main(int argc, char *argv[])
     printf("Running animation loop.\n");
     double elapsed_time;
     double frame[CHANNELS];
-    double animation_speed = 30.0;
+    double animation_speed = 75.0;
     double channel_speeds[CHANNELS];
     int frame_hops[CHANNELS];
 
