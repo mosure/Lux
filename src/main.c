@@ -681,24 +681,24 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
 
 void fractional_bar(int channel, double pos, double width, double hue, bool wrap)
 {
-    int upper_pixel = ceil(pos) % led_counts[channel];
+    int upper_pixel = (int)ceil(pos) % led_counts[channel];
 
-    if (wrap || upper_pixel == ceil(pos))
+    if (wrap || upper_pixel == (int)ceil(pos))
     {
         or_led(channel, upper_pixel, (struct HSV){ .H = hue .S = 1, .V = pos - (int)pos });
     }
 
-    int lower_pixel = (floor(pos) - ceil(width)) % led_counts[channel];
+    int lower_pixel = (int)(floor(pos) - ceil(width)) % led_counts[channel];
 
-    if (wrap || floor(pos) - width)
+    if (wrap || lower_pixel == (int)(floor(pos) - width))
     {
         or_led(channel, lower_pixel, (struct HSV){ .H = hue .S = 1, .V = 1 - (pos - (int)pos) });
     }
 
     for (int i = 0; i < floor(width); i++) {
-        int index = (floor(pos) - i) % led_counts[channel];
+        int index = ((int)floor(pos) - i) % led_counts[channel];
 
-        if (wrap || index == floor(pos) - i)
+        if (wrap || index == (int)floor(pos) - i)
         {
             or_led(channel, index, (struct HSV){ .H = hue .S = 1, .V = 1 });
         }
