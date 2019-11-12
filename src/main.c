@@ -679,6 +679,38 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
     }
 }
 
+void fractional_bar(int channel, double pos, double width, double hue, bool wrap)
+{
+    upper_pixel = ceil(pos) % led_counts[channel];
+
+    if (wrap || upper_pixel == ceil(pos))
+    {
+        or_led(channel, upper_pixel, (struct HSV){ .H = hue .S = 1, .V = pos - (int)pos });
+    }
+
+    lower_pixel = (floor(pos) - ceil(width)) % led_counts[channel];
+
+    if (wrap || floor(pos) - width)
+    {
+        or_led(channel, lower_pixel, (struct HSV){ .H = hue .S = 1, .V = 1 - (pos - (int)pos) });
+    }
+
+    for (int i = 0; i < floor(width); i++) {
+        index = (floor(pos) - i) % led_counts[channel];
+
+        if (wrap || index == floor(pos) - i)
+        {
+            or_led(channel, index, (struct HSV){ .H = hue .S = 1, .V = 1 });
+        }
+    }
+}
+
+void ring(int channel, double frame, double hue)
+{
+    pos = ((int)frame) % led_counts[channel] + (frame - (int)frame);
+    fractional_bar(channel, pos, 4, hue, true);
+}
+
 void bouncer(int channel, double frame, int frame_hops)
 {
     if (frame_hops > 0)
@@ -746,7 +778,9 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
-            bouncer(channel, frame[channel], frame_hops[channel]);
+            ring(channel, frame, map((int)frame % 360, 0, 360, 0, 1));
+
+            //bouncer(channel, frame[channel], frame_hops[channel]);
 
             // Render a specific effect
 
