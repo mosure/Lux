@@ -778,11 +778,11 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
-            ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
+            //ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
 
             // Render a specific effect
 
-            //calibration(channel);
+            calibration(channel);
             //random_sparkles(channel, frame[channel], frame_hops[channel], disp, lightness);
             //music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
 
