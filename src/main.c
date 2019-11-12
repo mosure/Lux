@@ -685,14 +685,14 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 
     if (wrap || upper_pixel == (int)ceil(pos))
     {
-        or_led(channel, upper_pixel, (struct HSV){ .H = hue, .S = 1, .V = pos - (int)pos });
+        set_led(channel, upper_pixel, (struct HSV){ .H = hue, .S = 1, .V = pos - (int)pos });
     }
 
     int lower_pixel = (int)(floor(pos) - ceil(width)) % led_counts[channel];
 
     if (wrap || lower_pixel == (int)(floor(pos) - width))
     {
-        or_led(channel, lower_pixel, (struct HSV){ .H = hue, .S = 1, .V = 1 - (pos - (int)pos) });
+        set_led(channel, lower_pixel, (struct HSV){ .H = hue, .S = 1, .V = 1 - (pos - (int)pos) });
     }
 
     for (int i = 0; i < floor(width); i++) {
@@ -700,7 +700,7 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 
         if (wrap || index == (int)floor(pos) - i)
         {
-            or_led(channel, index, (struct HSV){ .H = hue, .S = 1, .V = 1 });
+            set_led(channel, index, (struct HSV){ .H = hue, .S = 1, .V = 1 });
         }
     }
 }
@@ -779,8 +779,6 @@ int main(int argc, char *argv[])
             }
 
             ring(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
-
-            //bouncer(channel, frame[channel], frame_hops[channel]);
 
             // Render a specific effect
 
