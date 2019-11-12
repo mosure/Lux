@@ -742,7 +742,7 @@ int main(int argc, char *argv[])
 
             // Run anti-aliasing and origin dimming
             //anti_alias_matrix_origin(channel, frame[channel]);
-            decay_brightness_origin(channel, 0.98);
+            decay_brightness_origin(channel, 0.985);
         }
 
         //matrix_render();
