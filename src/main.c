@@ -679,6 +679,18 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
     }
 }
 
+void bouncer(int channel, double frame, int frame_hops)
+{
+    if (frame_hops > 0)
+    {
+        anti_alias_matrix_origin(channel, frame);
+    }
+
+    if (frame > 0 && (frame / 100) % 100 == 0) {
+        set_led_origin(channel, 0, (struct HSV){ .H = 1, .S = 1, .V = lightness });
+    }
+}
+
 int main(int argc, char *argv[])
 {
     printf("Initializing...\n");
@@ -734,15 +746,17 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
+            bouncer(channel, frame[channel], frame[hops], channel)
+
             // Render a specific effect
 
             //calibration(channel);
             //random_sparkles(channel, frame[channel], frame_hops[channel], disp, lightness);
-            music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
+            //music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
 
             // Run anti-aliasing and origin dimming
             //anti_alias_matrix_origin(channel, frame[channel]);
-            decay_brightness_origin(channel, 0.985);
+            //decay_brightness_origin(channel, 0.985);
         }
 
         //matrix_render();
