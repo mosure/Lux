@@ -791,19 +791,19 @@ int main(int argc, char *argv[])
                 frame[channel] = frame[channel] - led_counts[channel];
             }
 
-            state_clear(channel);
+            //state_clear(channel);
             //ring_pair(channel, frame[channel], map((int)frame[channel] % 360, 0, 360, 0, 1));
-            christmas(channel, frame[channel]);
+            //christmas(channel, frame[channel]);
 
             // Render a specific effect
 
             //calibration(channel);
             //random_sparkles(channel, frame[channel], frame_hops[channel], disp, lightness);
-            //music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
+            music_flow(channel, frame[channel], frame_hops[channel], pitch_acc_mean, lightness);
 
             // Run anti-aliasing and origin dimming
             //anti_alias_matrix_origin(channel, frame[channel]);
-            //decay_brightness_origin(channel, 0.985);
+            decay_brightness_origin(channel, 0.985);
         }
 
         //matrix_render();
