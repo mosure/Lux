@@ -51,7 +51,7 @@ uint64_t previous_time;
 
 int pre_offsets[CHANNELS] = { 0 };
 int post_offsets[CHANNELS] = { 37 };
-int midpoint_offsets[CHANNELS] = { 2 };
+int midpoint_offsets[CHANNELS] = { 1 };
 
 int led_counts[CHANNELS];
 int led_origins[CHANNELS];
@@ -744,7 +744,7 @@ int main(int argc, char *argv[])
     printf("Running animation loop.\n");
     double elapsed_time;
     double frame[CHANNELS];
-    double animation_speed = 75.0;
+    double animation_speed = 25.0;
     double channel_speeds[CHANNELS];
     int frame_hops[CHANNELS];
 
