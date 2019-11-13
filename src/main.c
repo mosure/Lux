@@ -751,7 +751,7 @@ int main(int argc, char *argv[])
     printf("Running animation loop.\n");
     double elapsed_time;
     double frame[CHANNELS];
-    double animation_speed = 25.0;
+    double animation_speed = 1.0;
     double channel_speeds[CHANNELS];
     int frame_hops[CHANNELS];
 
