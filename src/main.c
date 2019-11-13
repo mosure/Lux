@@ -318,7 +318,7 @@ void set_led(int channel, int index, struct HSV color)
 
 void set_led_origin(int channel, int offset, struct HSV color)
 {
-    state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])] = color;
+    state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])] = color;
 }
 
 void or_led(int channel, int index, struct HSV color)
@@ -330,9 +330,9 @@ void or_led(int channel, int index, struct HSV color)
 
 void or_led_origin(int channel, int offset, struct HSV color)
 {
-    state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])].H = (state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])].H + color.H) / 2.0;
-    state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])].S = (state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])].S + color.S) / 2.0;
-    state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])].V = (state[channel][offset + (led_origins[channel] + led_counts[channel] % led_counts[channel])].V + color.V) / 2.0;
+    state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])].H = (state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])].H + color.H) / 2.0;
+    state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])].S = (state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])].S + color.S) / 2.0;
+    state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])].V = (state[channel][led_origins[channel] + (offset + led_counts[channel] % led_counts[channel])].V + color.V) / 2.0;
 }
 
 void shift_origin(int channel, int shift_amount)
