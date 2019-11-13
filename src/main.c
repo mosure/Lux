@@ -708,7 +708,7 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 void christmas(int channel, double frame)
 {
     for (int i = 0; i < led_counts[channel]; i++) {
-        set_led(channel, i, (struct HSV){ .H = (((int)frame + i) % 2 == 0 ? 0 : 0.3), .S = 1, .V = 1 });
+        set_led(channel, i, (struct HSV){ .H = (((int)frame + (i / 2)) % 2 == 0 ? 0 : 0.3), .S = 1, .V = 1 });
     }
 }
 
