@@ -51,7 +51,7 @@ uint64_t previous_time;
 
 int pre_offsets[CHANNELS] = { 0 };
 int post_offsets[CHANNELS] = { 37 };
-int midpoint_offsets[CHANNELS] = { -10 };
+int midpoint_offsets[CHANNELS] = { -1 };
 
 int led_counts[CHANNELS];
 int led_origins[CHANNELS];
@@ -318,7 +318,7 @@ void set_led(int channel, int index, struct HSV color)
 
 void set_led_origin(int channel, int offset, struct HSV color)
 {
-    state[channel][offset + led_origins[channel]] = color;
+    state[channel][offset + (led_origins[channel] % led_counts[channel])] = color;
 }
 
 void or_led(int channel, int index, struct HSV color)
@@ -330,9 +330,9 @@ void or_led(int channel, int index, struct HSV color)
 
 void or_led_origin(int channel, int offset, struct HSV color)
 {
-    state[channel][offset + led_origins[channel]].H = (state[channel][offset + led_origins[channel]].H + color.H) / 2.0;
-    state[channel][offset + led_origins[channel]].S = (state[channel][offset + led_origins[channel]].S + color.S) / 2.0;
-    state[channel][offset + led_origins[channel]].V = (state[channel][offset + led_origins[channel]].V + color.V) / 2.0;
+    state[channel][offset + (led_origins[channel] % led_counts[channel])].H = (state[channel][offset + (led_origins[channel] % led_counts[channel])].H + color.H) / 2.0;
+    state[channel][offset + (led_origins[channel] % led_counts[channel])].S = (state[channel][offset + (led_origins[channel] % led_counts[channel])].S + color.S) / 2.0;
+    state[channel][offset + (led_origins[channel] % led_counts[channel])].V = (state[channel][offset + (led_origins[channel] % led_counts[channel])].V + color.V) / 2.0;
 }
 
 void shift_origin(int channel, int shift_amount)
@@ -685,14 +685,14 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 
     if (wrap || upper_pixel == (int)ceil(pos))
     {
-        set_led(channel, upper_pixel, (struct HSV){ .H = hue, .S = 1, .V = pos - (int)pos });
+        set_led_origin(channel, upper_pixel, (struct HSV){ .H = hue, .S = 1, .V = pos - (int)pos });
     }
 
     int lower_pixel = (int)(floor(pos) - ceil(width) + led_counts[channel]) % led_counts[channel];
 
     if (wrap || lower_pixel == (int)(floor(pos) - width))
     {
-        set_led(channel, lower_pixel, (struct HSV){ .H = hue, .S = 1, .V = 1 - (pos - (int)pos) });
+        set_led_origin(channel, lower_pixel, (struct HSV){ .H = hue, .S = 1, .V = 1 - (pos - (int)pos) });
     }
 
     for (int i = 0; i < floor(width); i++) {
@@ -700,7 +700,7 @@ void fractional_bar(int channel, double pos, double width, double hue, bool wrap
 
         if (wrap || index == (int)floor(pos) - i)
         {
-            set_led(channel, index, (struct HSV){ .H = hue, .S = 1, .V = 1 });
+            set_led_origin(channel, index, (struct HSV){ .H = hue, .S = 1, .V = 1 });
         }
     }
 }
