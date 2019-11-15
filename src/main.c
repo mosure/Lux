@@ -90,12 +90,12 @@ fvec_t *out_filters;
 fvec_t *pitch_acc;
 cvec_t *fftgrain;
 fmat_t *fb_coeffs;
-const uint_t win_s = 1024;
+const uint_t win_s = 512;
 const uint_t hop_s = 256;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 500;
-const uint_t n_energy_mag_acc = 20;
-const uint_t n_local_dim = 80;
+const uint_t n_energy_mag_acc = 40;
+const uint_t n_local_dim = 120;
 const uint_t max_buffer_runs = 400;
 uint_t samplerate;
 
@@ -772,9 +772,9 @@ int main(int argc, char *argv[])
         float energy_mag_acc_mean = fvec_mean(energy_mag_acc);
         float energy_local_dim_mean = fvec_mean(local_dim_buf);
 
-        float diff = energy_mag_acc_mean / (10000 * energy_local_dim_mean + 0.1);
+        float diff = energy_mag_acc_mean - (0.75 * energy_local_dim_mean);
 
-        double lightness = map(diff * diff, 0.0005, 2.5, 0, 1);
+        double lightness = map(diff * diff * diff, 0.0005, 0.8, 0, 1);
 
         float pitch_acc_mean = fvec_mean(pitch_acc);
 
