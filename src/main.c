@@ -90,10 +90,10 @@ fvec_t *out_filters;
 fvec_t *pitch_acc;
 cvec_t *fftgrain;
 fmat_t *fb_coeffs;
-const uint_t win_s = 512;
-const uint_t hop_s = 256;
+const uint_t win_s = 1024;
+const uint_t hop_s = 512;
 const uint_t n_filters = 40;
-const uint_t n_pitch_acc = 400;
+const uint_t n_pitch_acc = 800;
 const uint_t n_energy_mag_acc = 100;
 const uint_t n_local_dim = 1000;
 const uint_t max_buffer_runs = 400;
@@ -675,7 +675,7 @@ void music_flow(int channel, double frame, int frame_hops, float pitch_acc_mean,
 
     if (pitch_acc_mean > 1)
     {
-        set_led_origin(channel, 0, (struct HSV){ .H = map((int)(12 * log2f(pitch_acc_mean)) % 20, 0, 20, 0, 1), .S = 1, .V = lightness });
+        set_led_origin(channel, 0, (struct HSV){ .H = map((int)(12 * log2f(pitch_acc_mean)) % 30, 0, 30, 0, 1), .S = 1, .V = lightness });
     }
 }
 
@@ -772,7 +772,7 @@ int main(int argc, char *argv[])
         float energy_mag_acc_mean = fvec_mean(energy_mag_acc);
         float energy_local_dim_mean = fvec_mean(local_dim_buf);
 
-        double lightness = map(energy_mag_acc_mean / (energy_local_dim_mean + 0.001), 0.0005, 1.5, 0, 1);
+        double lightness = map(energy_mag_acc_mean / (1.5 * energy_local_dim_mean + 0.001), 0.0005, 1.5, 0, 1);
 
         float pitch_acc_mean = fvec_mean(pitch_acc);
 
