@@ -91,7 +91,7 @@ fvec_t *pitch_acc;
 cvec_t *fftgrain;
 fmat_t *fb_coeffs;
 const uint_t win_s = 1024;
-const uint_t hop_s = 512;
+const uint_t hop_s = 256;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 500;
 const uint_t n_energy_mag_acc = 10;
