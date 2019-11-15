@@ -774,7 +774,7 @@ int main(int argc, char *argv[])
 
         float diff = energy_mag_acc_mean - (0.75 * energy_local_dim_mean);
 
-        double lightness = map(10 * diff * diff * diff, 0.0005, 0.5, 0, 1);
+        double lightness = map(20 * diff * diff * diff, 0.0005, 0.5, 0, 1);
 
         float pitch_acc_mean = fvec_mean(pitch_acc);
 
