@@ -94,8 +94,8 @@ const uint_t win_s = 1024;
 const uint_t hop_s = 512;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 500;
-const uint_t n_energy_mag_acc = 50;
-const uint_t n_local_dim = 100;
+const uint_t n_energy_mag_acc = 10;
+const uint_t n_local_dim = 20;
 const uint_t max_buffer_runs = 400;
 uint_t samplerate;
 
