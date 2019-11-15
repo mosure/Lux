@@ -95,7 +95,7 @@ const uint_t hop_s = 256;
 const uint_t n_filters = 40;
 const uint_t n_pitch_acc = 500;
 const uint_t n_energy_mag_acc = 80;
-const uint_t n_local_dim = 120;
+const uint_t n_local_dim = 200;
 const uint_t max_buffer_runs = 400;
 uint_t samplerate;
 
