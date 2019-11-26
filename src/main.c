@@ -24,7 +24,7 @@
 #include <soundio/soundio.h>
 
 #define TARGET_FREQ             WS2811_TARGET_FREQ
-#define LED_1_GPIO_PIN          10
+#define LED_1_GPIO_PIN          18
 #define DMA                     10
 #define STRIP_TYPE              WS2811_STRIP_GRB		// WS2812/SK6812RGB integrated chip+leds
 
@@ -805,7 +805,7 @@ int main(int argc, char *argv[])
 
             // Run anti-aliasing and origin dimming
             //anti_alias_matrix_origin(channel, frame[channel]);
-            decay_brightness_origin(channel, 0.985);
+            decay_brightness_origin(channel, 0.99);
         }
 
         //matrix_render();
